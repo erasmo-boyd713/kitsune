@@ -1,7 +1,7 @@
 #######################
 # Common dependencies #
 #######################
-FROM python:3.11-bullseye AS base
+FROM python:3.11-bookworm AS base
 
 WORKDIR /app
 EXPOSE 8000
@@ -23,7 +23,7 @@ RUN set -xe \
     gettext build-essential \
     libxml2-dev libxslt1-dev zlib1g-dev git \
     libjpeg-dev libffi-dev libssl-dev libxslt1.1 \
-    libmariadb3 mariadb-client postgresql \
+    libmariadb3 mariadb-client postgresql pgloader vim time procps \
     optipng nodejs zip \
     # python
     && python -m venv /venv \
@@ -79,7 +79,7 @@ RUN poetry install --no-dev
 ##########################
 # Clean production image #
 ##########################
-FROM python:3.11-slim-bullseye AS prod
+FROM python:3.11-slim-bookworm AS prod
 
 WORKDIR /app
 
@@ -104,7 +104,7 @@ RUN apt-get update && \
     apt-get upgrade -y && \
     apt-get install -y --no-install-recommends \
     libmariadb3 optipng mariadb-client \
-    libxslt1.1 && \
+    libxslt1.1 postgresql pgloader vim time procps && \
     rm -rf /var/lib/apt/lists/*
 
 RUN mkdir /app/media && chown kitsune:kitsune /app/media
